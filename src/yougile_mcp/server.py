@@ -203,6 +203,16 @@ def create_task(
     description: str = "",
     assignee_id: str = "",
     due_date: str = "",
+    archived: bool | None = None,
+    completed: bool | None = None,
+    subtasks: list[str] | None = None,
+    assigned: list[str] | None = None,
+    checklists: list[dict[str, Any]] | None = None,
+    stickers: dict[str, Any] | None = None,
+    color: str = "",
+    timer: dict[str, Any] | None = None,
+    stopwatch: dict[str, Any] | None = None,
+    time_tracking: dict[str, Any] | None = None,
 ) -> Any:
     """Create a new task."""
     payload: dict[str, Any] = {"title": title}
@@ -216,6 +226,26 @@ def create_task(
         payload["assigneeId"] = assignee_id
     if due_date:
         payload["dueDate"] = due_date
+    if archived is not None:
+        payload["archived"] = archived
+    if completed is not None:
+        payload["completed"] = completed
+    if subtasks is not None:
+        payload["subtasks"] = subtasks
+    if assigned is not None:
+        payload["assigned"] = assigned
+    if checklists is not None:
+        payload["checklists"] = checklists
+    if stickers is not None:
+        payload["stickers"] = stickers
+    if color:
+        payload["color"] = color
+    if timer is not None:
+        payload["timer"] = timer
+    if stopwatch is not None:
+        payload["stopwatch"] = stopwatch
+    if time_tracking is not None:
+        payload["timeTracking"] = time_tracking
 
     return _with_client(lambda client: client.create_task(payload))
 
@@ -229,6 +259,16 @@ def update_task(
     assignee_id: str = "",
     column_id: str = "",
     due_date: str = "",
+    archived: bool | None = None,
+    completed: bool | None = None,
+    subtasks: list[str] | None = None,
+    assigned: list[str] | None = None,
+    checklists: list[dict[str, Any]] | None = None,
+    stickers: dict[str, Any] | None = None,
+    color: str = "",
+    timer: dict[str, Any] | None = None,
+    stopwatch: dict[str, Any] | None = None,
+    time_tracking: dict[str, Any] | None = None,
 ) -> Any:
     """Update an existing task."""
     payload: dict[str, Any] = {}
@@ -244,6 +284,26 @@ def update_task(
         payload["columnId"] = column_id
     if due_date:
         payload["dueDate"] = due_date
+    if archived is not None:
+        payload["archived"] = archived
+    if completed is not None:
+        payload["completed"] = completed
+    if subtasks is not None:
+        payload["subtasks"] = subtasks
+    if assigned is not None:
+        payload["assigned"] = assigned
+    if checklists is not None:
+        payload["checklists"] = checklists
+    if stickers is not None:
+        payload["stickers"] = stickers
+    if color:
+        payload["color"] = color
+    if timer is not None:
+        payload["timer"] = timer
+    if stopwatch is not None:
+        payload["stopwatch"] = stopwatch
+    if time_tracking is not None:
+        payload["timeTracking"] = time_tracking
 
     return _with_client(lambda client: client.update_task(task_id, payload))
 

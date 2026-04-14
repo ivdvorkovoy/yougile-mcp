@@ -110,6 +110,8 @@
 - `get_task_chat_subscribers`
 - `update_task_chat_subscribers`
 
+`create_task` и `update_task` поддерживают не только базовые поля, но и расширенные структуры задачи: подзадачи, чеклисты, стикеры, цвет, таймер, секундомер и time tracking.
+
 ### Сотрудники и чаты
 
 - `list_users`
