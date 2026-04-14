@@ -1,9 +1,8 @@
 # YouGile MCP client config
 
-The server is running on the Linux notebook at:
+Сервер поднят на Linux-машине и доступен по HTTP MCP endpoint:
 
-- `~/yougile-mcp-starter/.venv/bin/yougile-mcp`
-- env file: `~/yougile-mcp-starter/.env`
+- `http://192.10.10.160:8094/mcp`
 
 ## Generic MCP server entry
 
@@ -11,10 +10,7 @@ The server is running on the Linux notebook at:
 {
   "mcpServers": {
     "yougile": {
-      "command": "/home/general/yougile-mcp-starter/.venv/bin/yougile-mcp",
-      "env": {
-        "YOUGILE_DOTENV_PATH": "/home/general/yougile-mcp-starter/.env"
-      }
+      "url": "http://192.10.10.160:8094/mcp"
     }
   }
 }
@@ -22,9 +18,9 @@ The server is running on the Linux notebook at:
 
 ## Notes
 
-- If your client supports `envFile`, point it to `/home/general/yougile-mcp-starter/.env`.
-- If it wants a shell command, use the absolute `yougile-mcp` path above.
-- The server already stores the generated API key back into `.env` on first successful auth.
+- Сервер работает как `streamable-http`.
+- Доступ к YouGile идёт напрямую с Linux-машины.
+- Секреты по-прежнему хранятся локально в `~/yougile-mcp-starter/.env`.
 
 ## Available tools
 
@@ -38,4 +34,3 @@ The server is running on the Linux notebook at:
 - `update_task`
 - `add_comment`
 - `search_tasks`
-

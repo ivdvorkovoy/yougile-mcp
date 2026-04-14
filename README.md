@@ -56,9 +56,10 @@
 
 1. MCP-клиент запускает локальный сервер `yougile-mcp`.
 2. Сервер читает настройки из `.env`.
-3. Сервер получает API key, если он ещё не задан.
-4. Сервер ходит в YouGile напрямую по REST API.
-5. Результат возвращается обратно в MCP-клиент.
+3. Сервер поднимается как HTTP MCP endpoint на локальном порту.
+4. Сервер получает API key, если он ещё не задан.
+5. Сервер ходит в YouGile напрямую по REST API.
+6. Результат возвращается обратно в MCP-клиент.
 
 ## Настройка
 
@@ -68,7 +69,7 @@
    - `YOUGILE_API_KEY`;
    - или `YOUGILE_EMAIL` + `YOUGILE_PASSWORD` + `YOUGILE_COMPANY_ID`.
 4. Установите зависимости.
-5. Запустите сервер как MCP-процесс.
+5. Запустите сервер как MCP-процесс. По умолчанию он слушает `0.0.0.0:8094` и MCP endpoint доступен по `http://<host>:8094/mcp`.
 
 ## Переменные окружения
 
@@ -81,6 +82,9 @@
 - `YOUGILE_DOTENV_PATH` - путь до `.env`;
 - `YOUGILE_TIMEOUT_SECONDS` - таймаут HTTP-запросов;
 - `YOUGILE_RATE_LIMIT_PER_MINUTE` - лимит запросов в минуту.
+- `YOUGILE_MCP_TRANSPORT` - транспорт MCP, по умолчанию `streamable-http`;
+- `YOUGILE_MCP_HOST` - адрес, на котором слушает сервер, по умолчанию `0.0.0.0`;
+- `YOUGILE_MCP_PORT` - порт MCP-сервера, по умолчанию `8094`.
 
 ## Доступные tools
 
@@ -172,10 +176,7 @@
 {
   "mcpServers": {
     "yougile": {
-      "command": "/home/general/yougile-mcp-starter/.venv/bin/yougile-mcp",
-      "env": {
-        "YOUGILE_DOTENV_PATH": "/home/general/yougile-mcp-starter/.env"
-      }
+      "url": "http://192.10.10.160:8094/mcp"
     }
   }
 }

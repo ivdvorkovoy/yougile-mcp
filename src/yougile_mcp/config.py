@@ -13,6 +13,9 @@ def _env(name: str, default: str = "") -> str:
 @dataclass(frozen=True)
 class Settings:
     base_url: str
+    mcp_transport: str
+    mcp_host: str
+    mcp_port: int
     api_key: str
     email: str
     password: str
@@ -30,6 +33,9 @@ class Settings:
     def from_env(cls) -> "Settings":
         return cls(
             base_url=_env("YOUGILE_BASE_URL", "https://your-domain.com"),
+            mcp_transport=_env("YOUGILE_MCP_TRANSPORT", "streamable-http"),
+            mcp_host=_env("YOUGILE_MCP_HOST", "0.0.0.0"),
+            mcp_port=int(_env("YOUGILE_MCP_PORT", "8094")),
             api_key=_env("YOUGILE_API_KEY"),
             email=_env("YOUGILE_EMAIL"),
             password=_env("YOUGILE_PASSWORD"),

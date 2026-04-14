@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import Any
 
 from dotenv import load_dotenv
@@ -9,7 +10,13 @@ from .client import YouGileClient
 from .config import Settings
 
 
-mcp = FastMCP("yougile-mcp")
+load_dotenv()
+
+mcp = FastMCP(
+    "yougile-mcp",
+    host=os.getenv("YOUGILE_MCP_HOST", "0.0.0.0"),
+    port=int(os.getenv("YOUGILE_MCP_PORT", "8094")),
+)
 
 
 def _client() -> YouGileClient:
@@ -716,7 +723,8 @@ def delete_event_subscription(subscription_id: str) -> Any:
 
 def main() -> None:
     load_dotenv()
-    mcp.run()
+    settings = Settings.from_env()
+    mcp.run(transport=settings.mcp_transport)
 
 
 if __name__ == "__main__":
