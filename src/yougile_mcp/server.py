@@ -422,6 +422,42 @@ def delete_project_role(project_id: str, role_id: str) -> Any:
 
 
 @mcp.tool()
+def list_departments() -> Any:
+    """List departments."""
+    return _with_client(lambda client: client.list_departments())
+
+
+@mcp.tool()
+def get_department(department_id: str) -> Any:
+    """Get a department by id."""
+    return _with_client(lambda client: client.get_department(department_id))
+
+
+@mcp.tool()
+def create_department(title: str, users: list[str] | None = None, deleted: bool | None = None) -> Any:
+    """Create a department."""
+    payload: dict[str, Any] = {"title": title}
+    if users is not None:
+        payload["users"] = users
+    if deleted is not None:
+        payload["deleted"] = deleted
+    return _with_client(lambda client: client.create_department(payload))
+
+
+@mcp.tool()
+def update_department(department_id: str, title: str = "", users: list[str] | None = None, deleted: bool | None = None) -> Any:
+    """Update a department."""
+    payload: dict[str, Any] = {}
+    if title:
+        payload["title"] = title
+    if users is not None:
+        payload["users"] = users
+    if deleted is not None:
+        payload["deleted"] = deleted
+    return _with_client(lambda client: client.update_department(department_id, payload))
+
+
+@mcp.tool()
 def list_sprint_stickers() -> Any:
     """List sprint stickers."""
     return _with_client(lambda client: client.list_sprint_stickers())
@@ -572,6 +608,50 @@ def update_string_sticker_state(
     if deleted is not None:
         payload["deleted"] = deleted
     return _with_client(lambda client: client.update_string_sticker_state(sticker_id, state_id, payload))
+
+
+@mcp.tool()
+def list_event_subscriptions() -> Any:
+    """List event subscriptions."""
+    return _with_client(lambda client: client.list_event_subscriptions())
+
+
+@mcp.tool()
+def get_event_subscription(subscription_id: str) -> Any:
+    """Get an event subscription by id."""
+    return _with_client(lambda client: client.get_event_subscription(subscription_id))
+
+
+@mcp.tool()
+def create_event_subscription(url: str, event: str, deleted: bool | None = None, secret: str = "") -> Any:
+    """Create an event subscription."""
+    payload: dict[str, Any] = {"url": url, "event": event}
+    if deleted is not None:
+        payload["deleted"] = deleted
+    if secret:
+        payload["secret"] = secret
+    return _with_client(lambda client: client.create_event_subscription(payload))
+
+
+@mcp.tool()
+def update_event_subscription(subscription_id: str, url: str = "", event: str = "", deleted: bool | None = None, secret: str = "") -> Any:
+    """Update an event subscription."""
+    payload: dict[str, Any] = {}
+    if url:
+        payload["url"] = url
+    if event:
+        payload["event"] = event
+    if deleted is not None:
+        payload["deleted"] = deleted
+    if secret:
+        payload["secret"] = secret
+    return _with_client(lambda client: client.update_event_subscription(subscription_id, payload))
+
+
+@mcp.tool()
+def delete_event_subscription(subscription_id: str) -> Any:
+    """Delete an event subscription."""
+    return _with_client(lambda client: client.delete_event_subscription(subscription_id))
 
 
 def main() -> None:

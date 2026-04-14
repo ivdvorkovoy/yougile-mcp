@@ -256,6 +256,18 @@ class YouGileClient:
     def delete_project_role(self, project_id: str, role_id: str) -> Any:
         return self.request("DELETE", f"projects/{project_id}/roles/{role_id}")
 
+    def list_departments(self) -> Any:
+        return self.request("GET", "departments")
+
+    def get_department(self, department_id: str) -> Any:
+        return self.request("GET", f"departments/{department_id}")
+
+    def create_department(self, payload: dict[str, Any]) -> Any:
+        return self.request("POST", "departments", json=payload)
+
+    def update_department(self, department_id: str, payload: dict[str, Any]) -> Any:
+        return self.request("PUT", f"departments/{department_id}", json=payload)
+
     def list_sprint_stickers(self) -> Any:
         return self.request("GET", "sprint-stickers")
 
@@ -303,6 +315,21 @@ class YouGileClient:
 
     def update_string_sticker_state(self, sticker_id: str, state_id: str, payload: dict[str, Any]) -> Any:
         return self.request("PUT", f"string-stickers/{sticker_id}/states/{state_id}", json=payload)
+
+    def list_event_subscriptions(self) -> Any:
+        return self.request("GET", "event-subs")
+
+    def get_event_subscription(self, subscription_id: str) -> Any:
+        return self.request("GET", f"event-subs/{subscription_id}")
+
+    def create_event_subscription(self, payload: dict[str, Any]) -> Any:
+        return self.request("POST", "event-subs", json=payload)
+
+    def update_event_subscription(self, subscription_id: str, payload: dict[str, Any]) -> Any:
+        return self.request("PUT", f"event-subs/{subscription_id}", json=payload)
+
+    def delete_event_subscription(self, subscription_id: str) -> Any:
+        return self.request("DELETE", f"event-subs/{subscription_id}")
 
     def _request(
         self,

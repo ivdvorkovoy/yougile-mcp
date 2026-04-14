@@ -37,6 +37,7 @@
 - групповые чаты;
 - сообщения в чатах;
 - роли в проектах.
+- отделы / departments;
 
 ### Стикеры
 
@@ -131,6 +132,10 @@
 - `create_project_role`
 - `update_project_role`
 - `delete_project_role`
+- `list_departments`
+- `get_department`
+- `create_department`
+- `update_department`
 - `list_sprint_stickers`
 - `get_sprint_sticker`
 - `create_sprint_sticker`
@@ -147,6 +152,11 @@
 - `get_string_sticker_state`
 - `create_string_sticker_state`
 - `update_string_sticker_state`
+- `list_event_subscriptions`
+- `get_event_subscription`
+- `create_event_subscription`
+- `update_event_subscription`
+- `delete_event_subscription`
 
 ### Админка
 
