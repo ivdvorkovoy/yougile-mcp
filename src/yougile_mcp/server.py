@@ -611,9 +611,9 @@ def update_string_sticker_state(
 
 
 @mcp.tool()
-def list_event_subscriptions() -> Any:
+def list_event_subscriptions(include_deleted: bool = False) -> Any:
     """List event subscriptions."""
-    return _with_client(lambda client: client.list_event_subscriptions())
+    return _with_client(lambda client: client.list_event_subscriptions(include_deleted=include_deleted))
 
 
 @mcp.tool()

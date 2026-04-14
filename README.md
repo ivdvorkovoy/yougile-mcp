@@ -152,7 +152,7 @@
 - `get_string_sticker_state`
 - `create_string_sticker_state`
 - `update_string_sticker_state`
-- `list_event_subscriptions`
+- `list_event_subscriptions`  (webhooks)
 - `get_event_subscription`
 - `create_event_subscription`
 - `update_event_subscription`

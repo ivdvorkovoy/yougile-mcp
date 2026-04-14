@@ -316,20 +316,30 @@ class YouGileClient:
     def update_string_sticker_state(self, sticker_id: str, state_id: str, payload: dict[str, Any]) -> Any:
         return self.request("PUT", f"string-stickers/{sticker_id}/states/{state_id}", json=payload)
 
-    def list_event_subscriptions(self) -> Any:
-        return self.request("GET", "event-subs")
+    def list_event_subscriptions(self, include_deleted: bool = False) -> Any:
+        return self.request("GET", "webhooks", params={"includeDeleted": str(include_deleted).lower()})
 
     def get_event_subscription(self, subscription_id: str) -> Any:
-        return self.request("GET", f"event-subs/{subscription_id}")
+        subscriptions = self.list_event_subscriptions(include_deleted=True)
+        if isinstance(subscriptions, dict):
+            content = subscriptions.get("content") or subscriptions.get("data") or subscriptions.get("items") or []
+            for subscription in content:
+                if str(subscription.get("id")) == subscription_id:
+                    return subscription
+        elif isinstance(subscriptions, list):
+            for subscription in subscriptions:
+                if str(subscription.get("id")) == subscription_id:
+                    return subscription
+        return None
 
     def create_event_subscription(self, payload: dict[str, Any]) -> Any:
-        return self.request("POST", "event-subs", json=payload)
+        return self.request("POST", "webhooks", json=payload)
 
     def update_event_subscription(self, subscription_id: str, payload: dict[str, Any]) -> Any:
-        return self.request("PUT", f"event-subs/{subscription_id}", json=payload)
+        return self.request("PUT", f"webhooks/{subscription_id}", json=payload)
 
     def delete_event_subscription(self, subscription_id: str) -> Any:
-        return self.request("DELETE", f"event-subs/{subscription_id}")
+        return self.update_event_subscription(subscription_id, {"deleted": True})
 
     def _request(
         self,
