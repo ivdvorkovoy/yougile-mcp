@@ -34,3 +34,6 @@
 - `update_task`
 - `add_comment`
 - `search_tasks`
+- `search_tasks` поддерживает `page`, `limit` и `reversed_search`
+- `list_tasks` поддерживает `page` и `limit`
+- `list_projects`, `list_boards`, `list_columns`, `list_sprint_stickers`, `list_string_stickers` поддерживают `page` и `limit`

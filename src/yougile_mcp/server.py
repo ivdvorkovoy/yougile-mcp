@@ -75,9 +75,9 @@ def delete_api_key(key: str) -> Any:
 
 
 @mcp.tool()
-def list_projects() -> Any:
+def list_projects(page: int | None = None, limit: int | None = None) -> Any:
     """List accessible projects in YouGile."""
-    return _with_client(lambda client: client.list_projects())
+    return _with_client(lambda client: client.list_projects(page=page, limit=limit))
 
 
 @mcp.tool()
@@ -109,9 +109,9 @@ def update_project(project_id: str, title: str = "", users: list[str] | None = N
 
 
 @mcp.tool()
-def list_boards() -> Any:
+def list_boards(page: int | None = None, limit: int | None = None) -> Any:
     """List boards."""
-    return _with_client(lambda client: client.list_boards())
+    return _with_client(lambda client: client.list_boards(page=page, limit=limit))
 
 
 @mcp.tool()
@@ -145,9 +145,9 @@ def update_board(board_id: str, title: str = "", project_id: str = "", stickers:
 
 
 @mcp.tool()
-def list_columns() -> Any:
+def list_columns(page: int | None = None, limit: int | None = None) -> Any:
     """List columns."""
-    return _with_client(lambda client: client.list_columns())
+    return _with_client(lambda client: client.list_columns(page=page, limit=limit))
 
 
 @mcp.tool()
@@ -180,15 +180,20 @@ def update_column(column_id: str, title: str = "", board_id: str = "", color: in
 @mcp.tool()
 def list_tasks(
     query: str = "",
-    limit: int = 20,
+    page: int | None = None,
+    limit: int | None = 20,
     project_id: str | None = None,
     column_id: str | None = None,
     status: str | None = None,
 ) -> Any:
     """List tasks with optional filters."""
-    params: dict[str, Any] = {"limit": limit}
+    params: dict[str, Any] = {}
     if query:
         params["query"] = query
+    if page is not None:
+        params["page"] = page
+    if limit is not None:
+        params["limit"] = limit
     if project_id:
         params["projectId"] = project_id
     if column_id:
@@ -324,9 +329,27 @@ def add_comment(task_id: str, text: str) -> Any:
 
 
 @mcp.tool()
-def search_tasks(query: str, limit: int = 20) -> Any:
+def search_tasks(
+    query: str,
+    page: int | None = None,
+    limit: int | None = 20,
+    reversed_search: bool = False,
+    project_id: str | None = None,
+    column_id: str | None = None,
+    status: str | None = None,
+) -> Any:
     """Search tasks by text query."""
-    return _with_client(lambda client: client.search_tasks(query, limit=limit))
+    return _with_client(
+        lambda client: client.search_tasks(
+            query,
+            page=page,
+            limit=limit,
+            reversed_search=reversed_search,
+            project_id=project_id,
+            column_id=column_id,
+            status=status,
+        )
+    )
 
 
 @mcp.tool()
@@ -527,9 +550,9 @@ def update_department(department_id: str, title: str = "", users: list[str] | No
 
 
 @mcp.tool()
-def list_sprint_stickers() -> Any:
+def list_sprint_stickers(page: int | None = None, limit: int | None = None) -> Any:
     """List sprint stickers."""
-    return _with_client(lambda client: client.list_sprint_stickers())
+    return _with_client(lambda client: client.list_sprint_stickers(page=page, limit=limit))
 
 
 @mcp.tool()
@@ -604,9 +627,9 @@ def update_sprint_sticker_state(
 
 
 @mcp.tool()
-def list_string_stickers() -> Any:
+def list_string_stickers(page: int | None = None, limit: int | None = None) -> Any:
     """List string stickers."""
-    return _with_client(lambda client: client.list_string_stickers())
+    return _with_client(lambda client: client.list_string_stickers(page=page, limit=limit))
 
 
 @mcp.tool()

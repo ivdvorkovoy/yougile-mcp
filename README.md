@@ -33,6 +33,7 @@
 - задачи;
 - комментарии к задачам;
 - поиск задач;
+- пагинация для списков и поиска;
 - сотрудники и пользователи;
 - групповые чаты;
 - сообщения в чатах;
@@ -103,6 +104,8 @@
 - `create_column`
 - `update_column`
 
+Все list-методы выше принимают необязательные `page` и `limit`.
+
 ### Задачи и комментарии
 
 - `list_tasks`
@@ -115,6 +118,9 @@
 - `update_task_chat_subscribers`
 
 `create_task` и `update_task` поддерживают не только базовые поля, но и расширенные структуры задачи: подзадачи, чеклисты, стикеры, цвет, таймер, секундомер и time tracking.
+
+`list_tasks` принимает `query`, `page`, `limit`, `project_id`, `column_id` и `status`.
+`search_tasks` принимает `query`, `page`, `limit`, `project_id`, `column_id`, `status` и `reversed_search`.
 
 ### Сотрудники и чаты
 
@@ -164,6 +170,8 @@
 - `update_event_subscription`
 - `delete_event_subscription`
 
+`list_sprint_stickers` и `list_string_stickers` тоже принимают необязательные `page` и `limit`.
+
 ### Админка
 
 - `list_companies`
@@ -181,6 +189,15 @@
   }
 }
 ```
+
+## Примеры пагинации
+
+Примеры вызовов:
+
+- `list_tasks` с `page=1`, `limit=50`;
+- `search_tasks` с `query="invoice"`, `page=1`, `limit=20`, `reversed_search=false`;
+- `search_tasks` с `query="invoice"`, `page=1`, `limit=20`, `reversed_search=true`;
+- `list_projects` / `list_boards` / `list_columns` / `list_sprint_stickers` / `list_string_stickers` с `page` и `limit`.
 
 ## Подсказка
 
