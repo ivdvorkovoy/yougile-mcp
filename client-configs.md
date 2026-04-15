@@ -2,7 +2,7 @@
 
 Сервер поднят на Linux-машине и доступен по HTTP MCP endpoint:
 
-- `http://192.10.10.160:8094/mcp`
+- `http://192.10.10.160:3333/mcp`
 
 ## Generic MCP server entry
 
@@ -10,7 +10,7 @@
 {
   "mcpServers": {
     "yougile": {
-      "url": "http://192.10.10.160:8094/mcp"
+      "url": "http://192.10.10.160:3333/mcp"
     }
   }
 }

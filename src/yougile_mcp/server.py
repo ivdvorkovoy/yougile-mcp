@@ -4,6 +4,7 @@ import os
 from typing import Any
 
 from dotenv import load_dotenv
+import uvicorn
 from mcp.server.fastmcp import FastMCP
 
 from .client import YouGileClient
@@ -16,6 +17,7 @@ mcp = FastMCP(
     "yougile-mcp",
     host=os.getenv("YOUGILE_MCP_HOST", "0.0.0.0"),
     port=int(os.getenv("YOUGILE_MCP_PORT", "8094")),
+    streamable_http_path=os.getenv("YOUGILE_MCP_PATH", "/mcp"),
 )
 
 
@@ -724,7 +726,11 @@ def delete_event_subscription(subscription_id: str) -> Any:
 def main() -> None:
     load_dotenv()
     settings = Settings.from_env()
-    mcp.run(transport=settings.mcp_transport)
+    if settings.mcp_transport == "streamable-http":
+        app = mcp.streamable_http_app()
+        uvicorn.run(app, host=settings.mcp_host, port=settings.mcp_port, log_level="info")
+        return
+    mcp.run()
 
 
 if __name__ == "__main__":

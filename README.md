@@ -69,7 +69,7 @@
    - `YOUGILE_API_KEY`;
    - или `YOUGILE_EMAIL` + `YOUGILE_PASSWORD` + `YOUGILE_COMPANY_ID`.
 4. Установите зависимости.
-5. Запустите сервер как MCP-процесс. По умолчанию он слушает `0.0.0.0:8094` и MCP endpoint доступен по `http://<host>:8094/mcp`.
+5. Запустите сервер как MCP-процесс. По умолчанию он слушает `0.0.0.0:3333`, а MCP endpoint доступен по `http://<host>:3333/mcp`.
 
 ## Переменные окружения
 
@@ -84,7 +84,7 @@
 - `YOUGILE_RATE_LIMIT_PER_MINUTE` - лимит запросов в минуту.
 - `YOUGILE_MCP_TRANSPORT` - транспорт MCP, по умолчанию `streamable-http`;
 - `YOUGILE_MCP_HOST` - адрес, на котором слушает сервер, по умолчанию `0.0.0.0`;
-- `YOUGILE_MCP_PORT` - порт MCP-сервера, по умолчанию `8094`.
+- `YOUGILE_MCP_PORT` - порт MCP-сервера, по умолчанию `3333`.
 
 ## Доступные tools
 
@@ -176,7 +176,7 @@
 {
   "mcpServers": {
     "yougile": {
-      "url": "http://192.10.10.160:8094/mcp"
+      "url": "http://192.10.10.160:3333/mcp"
     }
   }
 }
