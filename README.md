@@ -1,5 +1,7 @@
 # yougile-mcp
 
+Официальная документация YouGile REST API: https://ru.yougile.com/api-v2#/
+
 Локальный MCP-сервер для YouGile. Он принимает команды от MCP-клиента и обращается **напрямую** к вашему YouGile по REST API.
 
 ## Зачем это нужно
@@ -33,7 +35,7 @@
 - задачи;
 - комментарии к задачам;
 - поиск задач;
-- пагинация для списков и поиска;
+- пагинация и фильтры, близкие к официальному YouGile API;
 - сотрудники и пользователи;
 - групповые чаты;
 - сообщения в чатах;
@@ -104,7 +106,13 @@
 - `create_column`
 - `update_column`
 
-Все list-методы выше принимают необязательные `page` и `limit`.
+Все list-методы выше принимают необязательные фильтры и пагинацию в стиле YouGile API:
+
+- `limit`
+- `offset`
+- `title` или `name`
+- `include_deleted`
+- дополнительные фильтры для сущности, например `project_id`, `board_id`, `column_id`, `assigned_to`, `sticker_id`, `sticker_state_id`
 
 ### Задачи и комментарии
 
@@ -119,8 +127,7 @@
 
 `create_task` и `update_task` поддерживают не только базовые поля, но и расширенные структуры задачи: подзадачи, чеклисты, стикеры, цвет, таймер, секундомер и time tracking.
 
-`list_tasks` принимает `query`, `page`, `limit`, `project_id`, `column_id` и `status`.
-`search_tasks` принимает `query`, `page`, `limit`, `project_id`, `column_id`, `status` и `reversed_search`.
+`list_tasks` и `search_tasks` используют параметры, близкие к `TaskController_searchReversed`: `title`, `column_id`, `assigned_to`, `sticker_id`, `sticker_state_id`, `include_deleted`, `limit`, `offset`.
 
 ### Сотрудники и чаты
 
@@ -170,7 +177,7 @@
 - `update_event_subscription`
 - `delete_event_subscription`
 
-`list_sprint_stickers` и `list_string_stickers` тоже принимают необязательные `page` и `limit`.
+`list_sprint_stickers` и `list_string_stickers` используют `name`, `board_id`, `include_deleted`, `limit`, `offset`.
 
 ### Админка
 
@@ -190,14 +197,16 @@
 }
 ```
 
-## Примеры пагинации
+## Примеры вызовов
 
 Примеры вызовов:
 
-- `list_tasks` с `page=1`, `limit=50`;
-- `search_tasks` с `query="invoice"`, `page=1`, `limit=20`, `reversed_search=false`;
-- `search_tasks` с `query="invoice"`, `page=1`, `limit=20`, `reversed_search=true`;
-- `list_projects` / `list_boards` / `list_columns` / `list_sprint_stickers` / `list_string_stickers` с `page` и `limit`.
+- `list_projects(title="")` с `limit=50`, `offset=0`;
+- `list_boards(project_id="...")` с `limit=50`, `offset=0`;
+- `list_columns(board_id="...")` с `limit=50`, `offset=0`;
+- `list_tasks(title="")` с `column_id="..."`, `limit=50`, `offset=0`;
+- `search_tasks(title="invoice")` с `limit=20`, `offset=0`;
+- `list_sprint_stickers(name="")` и `list_string_stickers(name="")` с `board_id="..."`.
 
 ## Подсказка
 

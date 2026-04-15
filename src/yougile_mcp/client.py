@@ -139,38 +139,30 @@ class YouGileClient:
                 params[key] = value
         return params
 
-    def _request_collection(
-        self,
-        resource: str,
-        *,
-        params: dict[str, Any] | None = None,
-        search: bool = False,
-        reversed_search: bool = False,
-    ) -> Any:
-        if search:
-            candidates = self._collection_search_paths(resource, reversed_search=reversed_search)
-            for path in candidates:
-                try:
-                    return self.request("GET", path, params=params)
-                except YouGileError as exc:
-                    if "404" not in str(exc):
-                        raise
-            # Fall back to the plain collection endpoint if the search endpoint is not available.
-        return self.request("GET", resource, params=params)
-
     @staticmethod
-    def _collection_search_paths(resource: str, *, reversed_search: bool = False) -> list[str]:
-        if reversed_search:
-            return [
-                f"{resource}/searchReversed",
-                f"{resource}/search-reversed",
-                f"{resource}/search/reversed",
-            ]
-        return [f"{resource}/search"]
+    def _pagination_params(*, offset: int | None = None, limit: int | None = None, page: int | None = None) -> dict[str, Any]:
+        if page is not None and offset is None:
+            page = max(page, 1)
+            offset = (page - 1) * (limit if limit is not None else 50)
+        return {
+            "offset": offset,
+            "limit": limit,
+        }
 
-    def list_projects(self, *, page: int | None = None, limit: int | None = None) -> Any:
-        params = self._merge_params({"page": page, "limit": limit})
-        return self._request_collection("projects", params=params, search=page is not None or limit is not None)
+    def list_projects(
+        self,
+        *,
+        title: str = "",
+        include_deleted: bool = False,
+        limit: int = 50,
+        offset: int = 0,
+        page: int | None = None,
+    ) -> Any:
+        params = self._merge_params(
+            {"title": title, "includeDeleted": include_deleted},
+            self._pagination_params(offset=offset, limit=limit, page=page),
+        )
+        return self.request("GET", "projects", params=params)
 
     def get_project(self, project_id: str) -> Any:
         return self.request("GET", f"projects/{project_id}")
@@ -181,9 +173,21 @@ class YouGileClient:
     def update_project(self, project_id: str, payload: dict[str, Any]) -> Any:
         return self.request("PUT", f"projects/{project_id}", json=payload)
 
-    def list_boards(self, *, page: int | None = None, limit: int | None = None) -> Any:
-        params = self._merge_params({"page": page, "limit": limit})
-        return self._request_collection("boards", params=params, search=page is not None or limit is not None)
+    def list_boards(
+        self,
+        *,
+        title: str = "",
+        project_id: str = "",
+        include_deleted: bool = False,
+        limit: int = 50,
+        offset: int = 0,
+        page: int | None = None,
+    ) -> Any:
+        params = self._merge_params(
+            {"title": title, "projectId": project_id, "includeDeleted": include_deleted},
+            self._pagination_params(offset=offset, limit=limit, page=page),
+        )
+        return self.request("GET", "boards", params=params)
 
     def get_board(self, board_id: str) -> Any:
         return self.request("GET", f"boards/{board_id}")
@@ -194,9 +198,21 @@ class YouGileClient:
     def update_board(self, board_id: str, payload: dict[str, Any]) -> Any:
         return self.request("PUT", f"boards/{board_id}", json=payload)
 
-    def list_columns(self, *, page: int | None = None, limit: int | None = None) -> Any:
-        params = self._merge_params({"page": page, "limit": limit})
-        return self._request_collection("columns", params=params, search=page is not None or limit is not None)
+    def list_columns(
+        self,
+        *,
+        title: str = "",
+        board_id: str = "",
+        include_deleted: bool = False,
+        limit: int = 50,
+        offset: int = 0,
+        page: int | None = None,
+    ) -> Any:
+        params = self._merge_params(
+            {"title": title, "boardId": board_id, "includeDeleted": include_deleted},
+            self._pagination_params(offset=offset, limit=limit, page=page),
+        )
+        return self.request("GET", "columns", params=params)
 
     def get_column(self, column_id: str) -> Any:
         return self.request("GET", f"columns/{column_id}")
@@ -207,7 +223,30 @@ class YouGileClient:
     def update_column(self, column_id: str, payload: dict[str, Any]) -> Any:
         return self.request("PUT", f"columns/{column_id}", json=payload)
 
-    def list_tasks(self, *, params: dict[str, Any] | None = None) -> Any:
+    def list_tasks(
+        self,
+        *,
+        title: str = "",
+        column_id: str = "",
+        assigned_to: str = "",
+        sticker_id: str = "",
+        sticker_state_id: str = "",
+        include_deleted: bool = False,
+        limit: int = 50,
+        offset: int = 0,
+        page: int | None = None,
+    ) -> Any:
+        params = self._merge_params(
+            {
+                "title": title,
+                "columnId": column_id,
+                "assignedTo": assigned_to,
+                "stickerId": sticker_id,
+                "stickerStateId": sticker_state_id,
+                "includeDeleted": include_deleted,
+            },
+            self._pagination_params(offset=offset, limit=limit, page=page),
+        )
         return self.request("GET", "tasks", params=params)
 
     def get_task(self, task_id: str) -> Any:
@@ -224,20 +263,30 @@ class YouGileClient:
 
     def search_tasks(
         self,
-        query: str,
+        title: str = "",
         *,
+        column_id: str = "",
+        assigned_to: str = "",
+        sticker_id: str = "",
+        sticker_state_id: str = "",
+        include_deleted: bool = False,
+        limit: int = 50,
+        offset: int = 0,
         page: int | None = None,
-        limit: int | None = 20,
         reversed_search: bool = False,
-        project_id: str | None = None,
-        column_id: str | None = None,
-        status: str | None = None,
     ) -> Any:
         params = self._merge_params(
-            {"query": query, "page": page, "limit": limit},
-            {"projectId": project_id, "columnId": column_id, "status": status},
+            {
+                "title": title,
+                "columnId": column_id,
+                "assignedTo": assigned_to,
+                "stickerId": sticker_id,
+                "stickerStateId": sticker_state_id,
+                "includeDeleted": include_deleted,
+            },
+            self._pagination_params(offset=offset, limit=limit, page=page),
         )
-        return self._request_collection("tasks", params=params, search=True, reversed_search=reversed_search)
+        return self.request("GET", "tasks", params=params)
 
     def get_task_chat_subscribers(self, task_id: str) -> Any:
         return self.request("GET", f"tasks/{task_id}/chat-subscribers")
@@ -326,9 +375,21 @@ class YouGileClient:
     def update_department(self, department_id: str, payload: dict[str, Any]) -> Any:
         return self.request("PUT", f"departments/{department_id}", json=payload)
 
-    def list_sprint_stickers(self, *, page: int | None = None, limit: int | None = None) -> Any:
-        params = self._merge_params({"page": page, "limit": limit})
-        return self._request_collection("sprint-stickers", params=params, search=page is not None or limit is not None)
+    def list_sprint_stickers(
+        self,
+        *,
+        name: str = "",
+        board_id: str = "",
+        include_deleted: bool = False,
+        limit: int = 50,
+        offset: int = 0,
+        page: int | None = None,
+    ) -> Any:
+        params = self._merge_params(
+            {"name": name, "boardId": board_id, "includeDeleted": include_deleted},
+            self._pagination_params(offset=offset, limit=limit, page=page),
+        )
+        return self.request("GET", "sprint-stickers", params=params)
 
     def get_sprint_sticker(self, sticker_id: str) -> Any:
         return self.request("GET", f"sprint-stickers/{sticker_id}")
@@ -351,9 +412,21 @@ class YouGileClient:
     def update_sprint_sticker_state(self, sticker_id: str, state_id: str, payload: dict[str, Any]) -> Any:
         return self.request("PUT", f"sprint-stickers/{sticker_id}/states/{state_id}", json=payload)
 
-    def list_string_stickers(self, *, page: int | None = None, limit: int | None = None) -> Any:
-        params = self._merge_params({"page": page, "limit": limit})
-        return self._request_collection("string-stickers", params=params, search=page is not None or limit is not None)
+    def list_string_stickers(
+        self,
+        *,
+        name: str = "",
+        board_id: str = "",
+        include_deleted: bool = False,
+        limit: int = 50,
+        offset: int = 0,
+        page: int | None = None,
+    ) -> Any:
+        params = self._merge_params(
+            {"name": name, "boardId": board_id, "includeDeleted": include_deleted},
+            self._pagination_params(offset=offset, limit=limit, page=page),
+        )
+        return self.request("GET", "string-stickers", params=params)
 
     def get_string_sticker(self, sticker_id: str) -> Any:
         return self.request("GET", f"string-stickers/{sticker_id}")
